@@ -1,0 +1,37 @@
+# Production-style stack (built images, no bind-mounted source, no reload).
+# Usage: docker compose -f docker-compose.prod.yml up --build -d
+# CORS_ORIGINS must be set to your real frontend origin (wildcards are rejected).
+services:
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: sqlite:////data/job_tracker.db
+      CORS_ORIGINS: ${CORS_ORIGINS:?Set CORS_ORIGINS to the frontend origin}
+    volumes:
+      - ./data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=4)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      target: production
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      API_INTERNAL_URL: http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy

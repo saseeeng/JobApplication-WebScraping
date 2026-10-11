@@ -218,3 +218,38 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ---------------------------------------------------------------------------
+# Job Market Tracker additions
+# ---------------------------------------------------------------------------
+
+# The Python rule `lib/` above would otherwise hide frontend/src/lib
+!frontend/src/lib/
+!frontend/src/lib/**
+
+# Environment files (keep only the documented examples)
+.env.*
+!.env.example
+
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+coverage/
+
+# Docker
+docker-compose.override.yml
+
+# Generated data (SQLite databases etc.); keep the folder itself
+data/*
+!data/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
