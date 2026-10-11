@@ -33,11 +33,25 @@ def get_status() -> ScrapeStatus:
     return _status
 
 
+QUICK_KALIBRR_TERMS = ["software-developer", "web-developer", "data-analyst", "devops", "it-support"]
+QUICK_ONLINEJOBS_TERMS = ["developer", "software engineer", "web developer", "qa tester"]
+
+
 def try_start() -> bool:
     """Claim the single scrape slot. False if a scrape is already running."""
     with _lock:
         if _status.running:
-            return False
+            # Auto-recover if a previous scrape got stuck for more than 180 seconds
+            if _status.started_at:
+                elapsed = (datetime.now(timezone.utc) - _status.started_at).total_seconds()
+                if elapsed > 180:
+                    logger.warning("Scrape exceeded 180s timeout; clearing stale lock")
+                    _status.running = False
+                else:
+                    return False
+            else:
+                _status.running = False
+
         _status.running = True
         _status.started_at = datetime.now(timezone.utc)
         _status.finished_at = None
@@ -47,10 +61,17 @@ def try_start() -> bool:
         return True
 
 
-def run_scrape(pages: int = 2) -> None:
+def run_scrape(pages: int = 1, quick: bool = True) -> None:
     """Scrape every source and store results. Must be preceded by ``try_start``."""
     try:
-        scrapers = [KalibrrNCRScraper(max_pages=pages), OnlineJobsPHScraper(max_pages=1)]
+        if quick:
+            scrapers = [
+                KalibrrNCRScraper(max_pages=1, search_terms=QUICK_KALIBRR_TERMS),
+                OnlineJobsPHScraper(max_pages=1, keywords=QUICK_ONLINEJOBS_TERMS),
+            ]
+        else:
+            scrapers = [KalibrrNCRScraper(max_pages=pages), OnlineJobsPHScraper(max_pages=1)]
+
         with SessionLocal() as db:
             service = JobService(JobRepository(db))
             for scraper in scrapers:

@@ -64,7 +64,7 @@ export function JobFilters({ options }: { options: JobFilterOptions }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only react to the debounced input
   }, [debouncedSearch]);
 
-  const hasFilters = ["search", "location", "category", "employment_type"].some((k) => searchParams.has(k));
+  const hasFilters = ["search", "location", "employment_type"].some((k) => searchParams.has(k));
 
   return (
     <div className={cn("flex flex-wrap items-end gap-3 p-4", isPending && "opacity-70")} aria-busy={isPending}>
@@ -86,13 +86,6 @@ export function JobFilters({ options }: { options: JobFilterOptions }) {
         param="location"
         value={searchParams.get("location") ?? ""}
         options={options.locations}
-        onChange={(p, v) => apply({ [p]: v })}
-      />
-      <SelectField
-        label="Category"
-        param="category"
-        value={searchParams.get("category") ?? ""}
-        options={options.categories}
         onChange={(p, v) => apply({ [p]: v })}
       />
       <SelectField

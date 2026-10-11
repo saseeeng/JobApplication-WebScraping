@@ -3,7 +3,7 @@ export const siteConfig = {
   description:
     "Explore job market trends: listings, in-demand skills, locations and hiring companies.",
   nav: [
-    { href: "/", label: "Dashboard" },
+    { href: "/", label: "Overview" },
     { href: "/jobs", label: "Jobs" },
     { href: "/analytics", label: "Analytics" },
   ],

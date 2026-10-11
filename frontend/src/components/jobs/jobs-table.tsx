@@ -38,9 +38,9 @@ export function JobsTable({ jobs, query }: JobsTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[760px] text-sm">
-        <thead className="border-b border-line bg-canvas">
+        <thead className="border-b border-slate-200 bg-slate-50/80">
           <tr>
-            <SortHeader field="title" label="Title" query={query} />
+            <SortHeader field="title" label="Title & Skills" query={query} />
             <SortHeader field="company" label="Company" query={query} />
             <SortHeader field="location" label="Location" query={query} />
             <th scope="col" className={plainHeader}>
@@ -52,33 +52,48 @@ export function JobsTable({ jobs, query }: JobsTableProps) {
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-line">
+        <tbody className="divide-y divide-slate-100">
           {jobs.map((job) => {
             const salary = formatSalary(job.salary_min, job.salary_max, job.salary_currency);
             return (
-              <tr key={job.id} className="hover:bg-canvas/70">
+              <tr key={job.id} className="transition-colors hover:bg-slate-50/80">
                 <td className="px-4 py-3.5">
-                  <p className="font-medium text-ink">{job.title}</p>
-                  <p className="mt-0.5 text-xs text-subtle">
-                    {job.category}
-                    {salary ? ` · ${salary}` : ""}
-                  </p>
+                  <p className="font-semibold text-slate-900">{job.title}</p>
+                  {salary ? (
+                    <div className="mt-1 flex flex-wrap items-center gap-1.5 text-xs">
+                      <span className="font-medium text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded text-[11px]">
+                        {salary}
+                      </span>
+                    </div>
+                  ) : null}
+                  {job.skills && job.skills.length > 0 ? (
+                    <div className="mt-1.5 flex flex-wrap gap-1">
+                      {job.skills.slice(0, 3).map((s) => (
+                        <span key={s} className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600">
+                          {s}
+                        </span>
+                      ))}
+                      {job.skills.length > 3 ? (
+                        <span className="text-[10px] text-slate-400 self-center">+{job.skills.length - 3}</span>
+                      ) : null}
+                    </div>
+                  ) : null}
                 </td>
-                <td className="px-4 py-3.5 text-muted">{job.company}</td>
-                <td className="px-4 py-3.5 text-muted">{job.location}</td>
+                <td className="px-4 py-3.5 text-sm font-medium text-slate-700">{job.company}</td>
+                <td className="px-4 py-3.5 text-xs text-slate-600">{job.location}</td>
                 <td className="px-4 py-3.5">
                   <Badge>{job.employment_type}</Badge>
                 </td>
-                <td className="whitespace-nowrap px-4 py-3.5 text-muted">{formatDate(job.posted_at)}</td>
+                <td className="whitespace-nowrap px-4 py-3.5 text-xs text-slate-500">{formatDate(job.posted_at)}</td>
                 <td className="px-4 py-3.5">
                   <a
                     href={job.source_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 font-medium text-ink hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-slate-800 hover:text-slate-900 hover:underline"
                     aria-label={`Apply for ${job.title} at ${job.company} (opens in a new tab)`}
                   >
-                    Apply <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                    Apply <ExternalLink className="h-3.5 w-3.5 text-slate-400" aria-hidden />
                   </a>
                 </td>
               </tr>

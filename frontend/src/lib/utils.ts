@@ -30,9 +30,21 @@ export function formatNumber(value: number): string {
   return new Intl.NumberFormat("en-US").format(value);
 }
 
+const USD_TO_PHP_RATE = 58;
+
 export function formatSalary(min: number | null, max: number | null, currency: string | null): string | null {
   if (min === null && max === null) return null;
-  const fmt = (n: number) => new Intl.NumberFormat("en-US").format(n);
-  const range = min !== null && max !== null ? `${fmt(min)} – ${fmt(max)}` : fmt((min ?? max) as number);
-  return currency ? `${currency} ${range}` : range;
+  const isUSD = (currency ?? "").toUpperCase() === "USD";
+  const factor = isUSD ? USD_TO_PHP_RATE : 1;
+
+  const convMin = min !== null ? Math.round(min * factor) : null;
+  const convMax = max !== null ? Math.round(max * factor) : null;
+
+  const fmt = (n: number) => `₱${new Intl.NumberFormat("en-US").format(n)}`;
+  const range =
+    convMin !== null && convMax !== null
+      ? `${fmt(convMin)} – ${fmt(convMax)}`
+      : fmt((convMin ?? convMax) as number);
+
+  return range;
 }

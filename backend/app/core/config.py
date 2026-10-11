@@ -28,8 +28,8 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:3000"
 
     # Scraper settings
-    scraper_timeout_seconds: float = 60.0
-    scraper_delay_seconds: float = 60.0
+    scraper_timeout_seconds: float = 15.0
+    scraper_delay_seconds: float = 1.5
     scraper_user_agent: str = "JobMarketTrackerBot/0.1 (+portfolio project; respects robots.txt)"
 
     @property
