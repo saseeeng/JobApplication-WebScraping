@@ -15,8 +15,6 @@ RUN useradd --create-home --uid 1000 appuser \
     && chown appuser:appuser /data
 
 COPY app ./app
-COPY tests ./tests
-COPY pytest.ini ./
 
 USER appuser
 EXPOSE 8000

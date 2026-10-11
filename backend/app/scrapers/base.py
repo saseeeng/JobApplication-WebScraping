@@ -56,15 +56,6 @@ class Fetcher(Protocol):
     def fetch(self, url: str) -> str: ...
 
 
-class FileFetcher:
-    """Reads a local HTML file instead of the network. Handy for offline parser tests."""
-
-    def fetch(self, url: str) -> str:
-        try:
-            return Path(url).read_text(encoding="utf-8")
-        except OSError as exc:
-            raise ScraperError(f"Could not read fixture {url}: {exc}") from exc
-
 
 class HttpFetcher:
     """Polite HTTP fetcher: honours robots.txt, a request timeout and a delay between requests.

@@ -59,15 +59,6 @@ You can fetch fresh IT jobs at any time using:
 
 ---
 
-## Running Tests
-
-```bash
-cd backend
-pytest
-```
-
----
-
 ## Project Structure
 
 ```
@@ -77,7 +68,6 @@ pytest
 │   │   ├── scrapers/         # BeautifulSoup scrapers (Kalibrr & OnlineJobs)
 │   │   ├── services/         # Business logic & ingestion
 │   │   └── models/           # SQLAlchemy DB models
-│   └── tests/                # Automated pytest suite
 ├── frontend/
 │   └── src/
 │       ├── app/              # Next.js pages (dashboard, jobs list)
